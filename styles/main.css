@@ -284,15 +284,13 @@ body {
   letter-spacing: 0.06em;
 }
 
-/* 答题页底部操作 */
+/* 答题页操作按钮：跟在选项列表下方，随内容流动 */
 .quiz-actions {
-  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.22rem var(--px);
-  border-top: 1px solid var(--border);
-  background: var(--bg);
+  margin-top: 0.36rem;
+  padding-bottom: 0.44rem;
 }
 
 
