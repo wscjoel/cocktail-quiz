@@ -19,7 +19,7 @@ const QUESTIONS = [
   },
   {
     id: 'Q2',
-    text: '你的整体色彩 / 质感更接近？',
+    text: '别人觉得你的整体色彩 / 质感更接近？',
     options: [
       { id: 'A', text: '干净通透，清清爽爽、不拖泥带水' },
       { id: 'B', text: '浓墨重彩、对比强烈，存在感拉满' },
@@ -107,14 +107,14 @@ const PROTOTYPES = [
   {
     id: 1, spirits: ['DryGin', 'Vodka'],
     V: [3, 0, 0, 0, 0, 0, 0],
-    name: '凛冬手术刀',
+    name: '手术刀',
     recipe: '极干金酒 60ml · 干味美思 5ml · 柠檬皮油喷雾',
     reason: '一刀见血的清醒，不留余地，也不留遗憾。',
   },
   {
     id: 2, spirits: ['Gin'],
     V: [0, 3, 0, 1, 0, 0, 0],
-    name: '黑松露权杖',
+    name: '木权杖',
     recipe: '金酒 30ml · 红味美思 30ml · 金巴利 30ml · 鲜橙皮',
     reason: '苦得理直气壮，全场都得听你的。',
   },
@@ -163,7 +163,7 @@ const PROTOTYPES = [
   {
     id: 9, spirits: ['WhiteRum'],
     V: [0, 0, 3, 0, 1, 0, 0],
-    name: '椰奶云朵',
+    name: '奶云朵',
     recipe: '白朗姆 50ml · 椰浆 30ml · 新鲜菠萝汁 50ml · 少许肉豆蔻',
     reason: '慵懒到骨子里，像泡在度假的午后。',
   },
