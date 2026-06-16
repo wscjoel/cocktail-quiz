@@ -52,6 +52,60 @@ const QUESTIONS = [
       { id: 'F', text: '松弛随性、自由洒脱，怎么舒服怎么来' },
     ],
   },
+  {
+    id: 'Q5',
+    text: '周末更治愈你的是？',
+    options: [
+      { id: 'A', text: '独自待着，刷剧 / 看书 / 发呆' },
+      { id: 'B', text: '跟 1-2 个老朋友安静聚一聚' },
+      { id: 'C', text: '出门走走逛逛，看看陌生人' },
+      { id: 'D', text: '直接组个局，人越多越上头' },
+    ],
+  },
+  {
+    id: 'Q6',
+    text: '你更容易被哪种人吸引？',
+    options: [
+      { id: 'A', text: '安静、有自己世界的人' },
+      { id: 'B', text: '谁都能聊得来、自带光的人' },
+    ],
+  },
+  {
+    id: 'Q7',
+    text: '做选择时，你更相信？',
+    options: [
+      { id: 'A', text: '当下那股「就是它」的直觉' },
+      { id: 'B', text: '心里那点说不清但很确定的感受' },
+      { id: 'C', text: '列一列优劣，挑数据更优的那个' },
+      { id: 'D', text: '拆解利弊、推演结果，再做决定' },
+    ],
+  },
+  {
+    id: 'Q8',
+    text: '朋友找你倒苦水，你的第一反应是？',
+    options: [
+      { id: 'A', text: '先抱抱 ta，陪着就行' },
+      { id: 'B', text: '帮 ta 理清楚到底卡在哪里' },
+    ],
+  },
+  {
+    id: 'Q9',
+    text: '突然多出 2 小时空闲，你会？',
+    options: [
+      { id: 'A', text: '让自己彻底放空，做什么都行' },
+      { id: 'B', text: '随性挑一件想做的小事' },
+      { id: 'C', text: '把待办清单往前推一推' },
+      { id: 'D', text: '立刻安排满，绝不浪费' },
+    ],
+  },
+  {
+    id: 'Q10',
+    text: '看到「计划被打乱」，你的心情是？',
+    options: [
+      { id: 'A', text: '没事，顺势改一改就好' },
+      { id: 'B', text: '必须立刻重排，不重排心里不踏实' },
+    ],
+  },
 ];
 
 /* 每道题每个选项 → { S: 基酒加票, V: 7维向量增量 } */
@@ -86,6 +140,17 @@ const WEIGHTS = {
     E: { S: { Gin: 1 },                    V: [0, 0, 0, 0, 1, 0, 1] },
     F: { S: { Cachaça: 1 },               V: [0, 0, 1, 0, 1, 0, 0] },
   },
+};
+
+/* 内在轴权重表（仅作用于 Q5-Q10）
+   N 能量取向: -内敛/+外放  ·  J 决策方式: -感性/+理性  ·  P 生活节奏: -松弛/+紧绷 */
+const INNER_WEIGHTS = {
+  Q5: { A: { N: -2 }, B: { N: -1 }, C: { N: 1 }, D: { N: 2 } },
+  Q6: { A: { N: -1 }, B: { N: 1 } },
+  Q7: { A: { J: -2 }, B: { J: -1 }, C: { J: 1 }, D: { J: 2 } },
+  Q8: { A: { J: -1 }, B: { J: 1 } },
+  Q9: { A: { P: -2 }, B: { P: -1 }, C: { P: 1 }, D: { P: 2 } },
+  Q10:{ A: { P: -1 }, B: { P: 1 } },
 };
 
 /* 基酒同族映射：用于原型筛选时宽松匹配 */
@@ -230,6 +295,31 @@ const CLASSICS = [
   { id: 15, name: '法兰西75',     V: [1, 0, 0, 0, 0, 0, 3], img: '法兰西75.jpg',     reason: '带气泡的优雅，贵气藏不住。' },
 ];
 
+/* 8 个内在人格原型
+   axis: 在 N/J/P 三轴上的「定位向量」，取值 -1/0/+1（与用户量化后的轴对齐）
+   prototypes: 与该人格调性相符的特调 id 列表（用于和外在 top3 候选取交集） */
+const PERSONALITIES = [
+  { id: 1, name: '冷峻执剑者',  axis: { N: -1, J: 1,  P: 1  }, tagline: '沉默是最锋利的回答',          prototypes: [1, 7]  },
+  { id: 2, name: '掌控魅惑者',  axis: { N: 1,  J: 1,  P: 1  }, tagline: '你笑着，但全场都听你的',      prototypes: [2, 12] },
+  { id: 3, name: '温柔治愈者',  axis: { N: -1, J: -1, P: -1 }, tagline: '慢慢的，但所有人都靠你充电',  prototypes: [8, 9]  },
+  { id: 4, name: '野性燃烧者',  axis: { N: 1,  J: -1, P: 1  }, tagline: '一靠近就让人心跳过速',        prototypes: [4, 13] },
+  { id: 5, name: '疏离诗人',    axis: { N: -1, J: -1, P: 1  }, tagline: '安静地藏好故事，等人来读',    prototypes: [5, 14] },
+  { id: 6, name: '少年清风',    axis: { N: 1,  J: -1, P: -1 }, tagline: '没心机，但每一阵风都有阳光味', prototypes: [3, 10] },
+  { id: 7, name: '沉淀念旧者',  axis: { N: -1, J: 1,  P: -1 }, tagline: '用一杯酒打开一段过往',        prototypes: [11]    },
+  { id: 8, name: '闪耀松弛者',  axis: { N: 1,  J: 1,  P: -1 }, tagline: '贵气从骨子里漫出来，毫不费力', prototypes: [6, 15] },
+];
+
+/* 7 维向量的中文外在轮廓短语（用于融合句拼接） */
+const EXTERNAL_LABELS = [
+  '锐利干冽',  // D1
+  '浓郁苦韵',  // D2
+  '甜润乳脂',  // D3
+  '草本木质',  // D4
+  '热带果爆',  // D5
+  '厚重陈香',  // D6
+  '轻盈气泡',  // D7
+];
+
 
 /* ================================================================
    工 具 函 数
@@ -288,25 +378,81 @@ function calcResult(answers) {
 
   var Vn = vecNorm(V);
 
-  /* 匹配个性化原型（同族基酒优先 → 余弦最近） */
+  /* 匹配个性化原型（同族基酒优先 → 余弦最近，保留 top 3 候选） */
   var family     = SPIRIT_FAMILY[winSpirit] || [winSpirit];
   var candidates = PROTOTYPES.filter(function (p) {
     return p.spirits.some(function (s) { return family.indexOf(s) >= 0; });
   });
   if (candidates.length === 0) candidates = PROTOTYPES.slice();
 
-  var custom = candidates.reduce(function (best, p) {
-    var sim = cosineSim(Vn, vecNorm(p.V));
-    return sim > best.sim ? { p: p, sim: sim } : best;
-  }, { p: candidates[0], sim: -Infinity }).p;
+  var ranked = candidates.map(function (p) {
+    return { p: p, sim: cosineSim(Vn, vecNorm(p.V)) };
+  }).sort(function (a, b) { return b.sim - a.sim; });
+  var top3 = ranked.slice(0, 3).map(function (r) { return r.p; });
 
-  /* 匹配经典鸡尾酒（独立余弦最近邻） */
+  /* 累加内在轴（Q5-Q10） */
+  var axis = { N: 0, J: 0, P: 0 };
+  ['Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10'].forEach(function (qId) {
+    var opt = answers[qId];
+    if (!opt) return;
+    var w = INNER_WEIGHTS[qId][opt];
+    if (!w) return;
+    Object.keys(w).forEach(function (k) { axis[k] += w[k]; });
+  });
+
+  /* 量化到 -1 / 0 / +1 */
+  var quantized = {
+    N: axis.N <= -1 ? -1 : axis.N >= 1 ? 1 : 0,
+    J: axis.J <= -1 ? -1 : axis.J >= 1 ? 1 : 0,
+    P: axis.P <= -1 ? -1 : axis.P >= 1 ? 1 : 0,
+  };
+
+  /* 最近人格（曼哈顿距离，并列时按 id 序号取小） */
+  var personality = PERSONALITIES.reduce(function (best, persona) {
+    var d = Math.abs(persona.axis.N - quantized.N)
+          + Math.abs(persona.axis.J - quantized.J)
+          + Math.abs(persona.axis.P - quantized.P);
+    if (d < best.d) return { p: persona, d: d };
+    return best;
+  }, { p: PERSONALITIES[0], d: Infinity }).p;
+
+  /* 取交集：top3 中第一个落在该人格 prototypes 列表里的，否则退回 top1 */
+  var custom = null;
+  for (var i = 0; i < top3.length; i++) {
+    if (personality.prototypes.indexOf(top3[i].id) >= 0) { custom = top3[i]; break; }
+  }
+  if (!custom) custom = top3[0];
+
+  /* 匹配经典鸡尾酒（独立余弦最近邻，不受人格影响） */
   var classic = CLASSICS.reduce(function (best, c) {
     var sim = cosineSim(Vn, vecNorm(c.V));
     return sim > best.sim ? { c: c, sim: sim } : best;
   }, { c: CLASSICS[0], sim: -Infinity }).c;
 
-  return { custom: custom, classic: classic };
+  /* 融合句：外在 top-2 维度短语 + 内在标签 */
+  var fusion = composeReason(V, personality);
+
+  return { custom: custom, classic: classic, personality: personality, fusion: fusion };
+}
+
+/* 生成「外在轮廓 + 内在标签 + 融合句」推荐理由
+   externalV: 7 维原始向量 V；persona: 命中的人格对象 */
+function composeReason(externalV, persona) {
+  /* 取 V 的 top 2 维度，拼成「A 与 B」的外在描述 */
+  var indexed = externalV.map(function (v, i) { return { v: v, i: i }; });
+  indexed.sort(function (a, b) { return b.v - a.v; });
+  var top = indexed.filter(function (x) { return x.v > 0; }).slice(0, 2);
+
+  var external;
+  if (top.length === 0) {
+    external = '说不清的轮廓';
+  } else if (top.length === 1) {
+    external = EXTERNAL_LABELS[top[0].i];
+  } else {
+    external = EXTERNAL_LABELS[top[0].i] + '混着' + EXTERNAL_LABELS[top[1].i];
+  }
+
+  return external + '的轮廓，' + persona.tagline + ' —— 这一杯，是为你调的。';
 }
 
 
@@ -411,7 +557,7 @@ function selectOption(qId, optId) {
 }
 
 /* 渲染结果页 */
-function renderResult(custom, classic) {
+function renderResult(custom, classic, personality, fusion) {
   /* ── 专属特调卡 ── */
   var customCard = document.getElementById('result-custom-card');
   customCard.innerHTML = '';
@@ -419,6 +565,15 @@ function renderResult(custom, classic) {
   var lbl = document.createElement('div');
   lbl.className = 'card-section-label';
   lbl.textContent = '你的专属特调';
+
+  /* 人格名 + 融合句（写在鸡尾酒名上方，作为推荐理由） */
+  var personaEl = document.createElement('div');
+  personaEl.className = 'persona-name';
+  personaEl.textContent = personality.name;
+
+  var fusionEl = document.createElement('div');
+  fusionEl.className = 'fusion-line';
+  fusionEl.textContent = fusion;
 
   var nameEl = document.createElement('div');
   nameEl.className = 'custom-name';
@@ -442,7 +597,7 @@ function renderResult(custom, classic) {
   reasonEl.className = 'custom-reason';
   reasonEl.textContent = '\u201c' + custom.reason + '\u201d';
 
-  [lbl, nameEl, rule1, recipeEl, rule2, reasonEl].forEach(function (el) {
+  [lbl, personaEl, fusionEl, nameEl, rule1, recipeEl, rule2, reasonEl].forEach(function (el) {
     customCard.appendChild(el);
   });
 
@@ -522,7 +677,7 @@ document.getElementById('btn-next').addEventListener('click', function () {
 
     setTimeout(function () {
       var result = calcResult(answers);
-      renderResult(result.custom, result.classic);
+      renderResult(result.custom, result.classic, result.personality, result.fusion);
       showScreen('screen-result');
     }, 1400);
   }

@@ -150,7 +150,7 @@ body {
 
 .quiz-progress-fill {
   height: 100%;
-  width: 25%;
+  width: 10%;
   background: var(--gold);
   transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -337,6 +337,27 @@ body {
   color: var(--gold-soft);
   text-transform: uppercase;
   margin-bottom: 0.2rem;
+}
+
+/* 人格名（鸡尾酒名上方的内在标签条） */
+.persona-name {
+  font-size: 0.28rem;
+  font-weight: 600;
+  color: var(--gold-light);
+  letter-spacing: 0.16em;
+  margin-bottom: 0.14rem;
+}
+
+/* 融合句（外在 + 内在 拼接的推荐理由） */
+.fusion-line {
+  font-size: 0.26rem;
+  color: var(--text-1);
+  font-style: italic;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.26rem;
+  padding-bottom: 0.22rem;
+  border-bottom: 1px dashed var(--border-hi);
 }
 
 .custom-name {
