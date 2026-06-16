@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+  <title>鸡尾酒测一测</title>
+  <link rel="stylesheet" href="./styles/main.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ─── 起始页 ─── -->
+    <section id="screen-start" class="screen active">
+      <div class="start-wrap">
+        <div class="start-eyebrow">COCKTAIL TEST</div>
+        <div class="start-rule"></div>
+        <h1 class="start-title">鸡尾酒<br>测一测</h1>
+        <div class="start-rule"></div>
+        <p class="start-desc">四个问题<br>为你调出那杯只属于你的酒</p>
+        <button id="btn-start" class="btn btn-gold btn-cta">开 始 测 试</button>
+      </div>
+    </section>
+
+    <!-- ─── 答题页 ─── -->
+    <section id="screen-quiz" class="screen">
+      <div class="quiz-top">
+        <div class="quiz-progress-track">
+          <div id="quiz-progress-fill" class="quiz-progress-fill"></div>
+        </div>
+        <div class="quiz-meta-row">
+          <span id="quiz-step-label" class="quiz-step-label">1 / 4</span>
+        </div>
+      </div>
+      <div class="quiz-body">
+        <div id="question-wrap"></div>
+      </div>
+      <div class="quiz-actions">
+        <button id="btn-prev" class="btn btn-ghost">← 上一题</button>
+        <button id="btn-next" class="btn btn-gold" disabled>下一题</button>
+      </div>
+    </section>
+
+    <!-- ─── 结果页 ─── -->
+    <section id="screen-result" class="screen">
+      <div class="result-eyebrow">YOUR RESULT</div>
+
+      <div id="result-custom-card" class="card custom-card"></div>
+
+      <div class="bridge-row">
+        <div class="bridge-rule"></div>
+        <span class="bridge-text">在经典世界里，你最像这杯——</span>
+        <div class="bridge-rule"></div>
+      </div>
+
+      <div id="result-classic-card" class="card classic-card"></div>
+
+      <div class="result-actions">
+        <button id="btn-retry" class="btn btn-outline btn-full">重新测试</button>
+      </div>
+    </section>
+
+  </div>
+  <script src="./js/app.js"></script>
+</body>
+</html>
